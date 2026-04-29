@@ -2,9 +2,14 @@
 '''
 A script to generate characters for the first edition of the Paranoia RPG.
 '''
+import argparse
 import os
+import re
+import sys
 from random import randint, choice
 import string
+
+from PIL import Image, ImageDraw, ImageFont
 
 
 class Character(object):
@@ -1298,12 +1303,321 @@ class DataTables(object):
 
     FREE_SKILL_COUNT = 1
 
-def main():
+# ----------------------------------------------------------------------------
+# Character sheet rendering
+# ----------------------------------------------------------------------------
+
+SHEET_TEMPLATE = "paranoia-sheet.png"
+
+# Candidate filenames for the "Post Box" Regular font. Pillow searches
+# C:\Windows\Fonts automatically; we also look in the per-user font folder.
+_FONT_CANDIDATES = [
+    "postbox_regular.ttf",
+    "PostBox_Regular.ttf",
+    "Post Box.ttf",
+    "PostBox.ttf",
+    "POSTBOX.TTF",
+]
+
+_FONT_DIRS = [
+    os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts"),
+    os.path.join(os.environ.get("LOCALAPPDATA", ""),
+                 "Microsoft", "Windows", "Fonts"),
+]
+
+_font_path_cache = None
+
+
+def _resolve_font_path():
+    global _font_path_cache
+    if _font_path_cache is not None:
+        return _font_path_cache
+    for d in _FONT_DIRS:
+        if not d or not os.path.isdir(d):
+            continue
+        for name in _FONT_CANDIDATES:
+            candidate = os.path.join(d, name)
+            if os.path.isfile(candidate):
+                _font_path_cache = candidate
+                return candidate
+    raise FileNotFoundError(
+        "Post Box Regular font not found. Looked for {} in {}"
+        .format(_FONT_CANDIDATES, _FONT_DIRS))
+
+
+_font_cache = {}
+
+
+def _font(size):
+    key = int(size)
+    if key not in _font_cache:
+        _font_cache[key] = ImageFont.truetype(_resolve_font_path(), key)
+    return _font_cache[key]
+
+
+def _text_width(text, font):
+    bbox = font.getbbox(text)
+    return bbox[2] - bbox[0]
+
+
+def _fit_text(text, font, max_width):
+    if max_width is None or _text_width(text, font) <= max_width:
+        return text
+    ell = "\u2026"
+    while text and _text_width(text + ell, font) > max_width:
+        text = text[:-1]
+    return text + ell if text else ell
+
+
+def _draw_text(draw, text, x, y, size=11, anchor="ls", max_width=None,
+               fill=(0, 0, 0)):
+    font = _font(size)
+    text = _fit_text(str(text), font, max_width)
+    draw.text((x, y), text, font=font, fill=fill, anchor=anchor)
+
+
+# Coordinates derived from paranoia-sheet.png (2550 x 3300, letter @ 300 dpi).
+# Y values are text baselines (anchor 'ls' / 'rs').
+
+# Default font sizes (in pixels, ~300 dpi)
+_FS_LARGE = 50   # main field values (name, single-line boxes)
+_FS_MED   = 46   # attribute numbers, weapons
+_FS_SMALL = 38   # mutant powers default
+
+# Primary attributes: (baseline_y, dict_key)
+_PRIMARY_ROWS = [
+    (525, "strength"),
+    (595, "endurance"),
+    (665, "agility"),
+    (735, "manual dexterity"),
+    (805, "moxie"),
+    (875, "chutzpah"),
+    (945, "mechanical aptitude"),
+    (1015, "power index"),
+]
+_PRIMARY_VALUE_X = 1190  # right edge of underline
+
+# Secondary attributes: (baseline_y, dict_key, formatter)
+def _fmt_int(v): return "{}".format(v)
+def _fmt_kg(v): return "{} kg".format(v)
+def _fmt_signed_pct(v): return "{:+d}%".format(v)
+
+_SECONDARY_ROWS = [
+    (525, "carrying capacity", _fmt_kg),
+    (595, "damage bonus", _fmt_int),
+    (665, "macho bonus", _fmt_int),
+    (735, "melee bonus", _fmt_signed_pct),
+    (805, "aimed weapon bonus", _fmt_signed_pct),
+    (875, "comprehension bonus", _fmt_signed_pct),
+    (945, "believability bonus", _fmt_signed_pct),
+    (1015, "repair bonus", _fmt_signed_pct),
+]
+_SECONDARY_VALUE_X = 2415
+
+# Single-line fields: (x, baseline_y, max_width, anchor)
+_FIELD_COORDS = {
+    "character_name": (540, 295, 680, "ls"),
+    "player_name":    (1185, 295, 1230, "ls"),
+    "security_clearance": (210, 1430, 980, "ls"),
+    "service_group":      (1240, 1430, 1170, "ls"),
+    "secret_society":      (210, 1700, 980, "ls"),
+    "secret_society_rank": (1240, 1700, 1170, "ls"),
+}
+
+# Box areas: (x, y_top, width, height) for multi-line content
+_MUTANT_BOX = (210, 1820, 2210, 200)
+_EQUIP_BOX  = (1240, 2100, 1180, 440)
+_SKILLS_BOX = (190, 2640, 2230, 580)
+
+# Weapons table: 6 underlined rows for weapon name / to-hit
+_WEAPON_ROWS_Y = [2110, 2200, 2290, 2380, 2470, 2545]
+_WEAPON_NAME_X = 210
+_WEAPON_NAME_W = 480
+_WEAPON_HIT_X  = 1160
+
+# Credits: cover preprinted "100" then redraw
+_CREDITS_RECT = (1240, 1130, 1700, 1220)  # white-out box
+_CREDITS_TEXT_XY = (1290, 1200)           # baseline
+
+
+def _flatten_skill_tree(tree, attributes):
+    '''Depth-first flatten of skills with character_level set, returning a
+    list of strings ready to render (already indented).'''
+    indent_unit = "  "
+    lines = []
+
+    def _walk(skill):
+        if skill.character_level is not None:
+            with_attr = skill._calculate_percentage(attributes)
+            without_attr = skill._calculate_percentage(None)
+            label = "{}{} ({}%/{}%)".format(
+                indent_unit * (skill.base_level - 1),
+                skill.name, with_attr, without_attr)
+            lines.append(label)
+        for child in skill.child_skills:
+            _walk(child)
+
+    for top in tree.top_level_skills:
+        _walk(top)
+    return lines
+
+
+def _draw_lines_in_box(draw, lines, box, size, line_gap=12, columns=1,
+                       column_gap=40):
+    '''Draw lines into the box. Returns True if everything fits.'''
+    x, y, w, h = box
+    font = _font(size)
+    asc, desc = font.getmetrics()
+    line_height = asc + desc + line_gap
+    max_lines_per_col = max(1, h // line_height)
+    needed_cols = (len(lines) + max_lines_per_col - 1) // max_lines_per_col
+    if needed_cols > columns:
+        return False
+    col_width = (w - column_gap * (columns - 1)) // columns
+    for i, text in enumerate(lines):
+        col = i // max_lines_per_col
+        row = i % max_lines_per_col
+        cx = x + col * (col_width + column_gap)
+        cy = y + asc + row * line_height
+        draw.text((cx, cy), _fit_text(text, font, col_width),
+                  font=font, fill=(0, 0, 0), anchor="ls")
+    return True
+
+
+def _autofit_lines(draw, lines, box, columns_options=(1, 2),
+                   sizes=(46, 42, 38, 34, 30, 26)):
+    '''Try (columns, size) combinations until everything fits.'''
+    for size in sizes:
+        for cols in columns_options:
+            font = _font(size)
+            asc, desc = font.getmetrics()
+            line_height = asc + desc + 12
+            x, y, w, h = box
+            max_lines_per_col = max(1, h // line_height)
+            if len(lines) <= max_lines_per_col * cols:
+                _draw_lines_in_box(draw, lines, box, size, columns=cols)
+                return
+    # last resort: smallest size, max columns, may overflow
+    _draw_lines_in_box(draw, lines, box, sizes[-1],
+                       columns=max(columns_options))
+
+
+def _sanitize_filename(name):
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", name).strip("_") or "character"
+
+
+def render_character_sheet(character, output_path):
+    '''Render the given Character onto a copy of the template and save it.'''
+    template_path = os.path.join(os.path.dirname(__file__), SHEET_TEMPLATE)
+    img = Image.open(template_path).convert("RGB")
+    draw = ImageDraw.Draw(img)
+
+    # Name
+    _draw_text(draw, character._name,
+               *_FIELD_COORDS["character_name"][:2],
+               size=_FS_LARGE,
+               max_width=_FIELD_COORDS["character_name"][2],
+               anchor=_FIELD_COORDS["character_name"][3])
+
+    # Primary attributes (right-aligned numbers on the underline)
+    for y, key in _PRIMARY_ROWS:
+        _draw_text(draw, character._primary_attributes[key],
+                   _PRIMARY_VALUE_X, y, size=_FS_MED, anchor="rs")
+
+    # Secondary attributes
+    for y, key, fmt in _SECONDARY_ROWS:
+        _draw_text(draw, fmt(character._secondary_attributes[key]),
+                   _SECONDARY_VALUE_X, y, size=_FS_MED, anchor="rs")
+
+    # Credits: white-out preprinted "100" then write computed value
+    draw.rectangle(_CREDITS_RECT, fill=(255, 255, 255))
+    _draw_text(draw, "{} cr".format(character._credits),
+               *_CREDITS_TEXT_XY, size=_FS_LARGE, anchor="ls")
+
+    # Single-line fields
+    x, y, w, a = _FIELD_COORDS["security_clearance"]
+    _draw_text(draw, "RED", x, y, size=_FS_LARGE, max_width=w, anchor=a)
+    x, y, w, a = _FIELD_COORDS["service_group"]
+    _draw_text(draw, character._service_group, x, y, size=_FS_LARGE,
+               max_width=w, anchor=a)
+    x, y, w, a = _FIELD_COORDS["secret_society"]
+    _draw_text(draw, character._secret_society, x, y, size=_FS_LARGE,
+               max_width=w, anchor=a)
+    x, y, w, a = _FIELD_COORDS["secret_society_rank"]
+    _draw_text(draw, "1", x, y, size=_FS_LARGE, max_width=w, anchor=a)
+
+    # Mutant powers
+    powers_lines = []
+    if character._registered_mutant:
+        powers_lines.append("(REGISTERED)")
+    for p in character._mutant_powers:
+        if p[0] is None:
+            continue
+        powers_lines.append("{} ({})".format(p[0], p[1]))
+    _autofit_lines(draw, powers_lines, _MUTANT_BOX,
+                   columns_options=(2, 3), sizes=(42, 38, 34, 30))
+
+    # Weapons
+    for i, item in enumerate(character._weapon_stats):
+        if i >= len(_WEAPON_ROWS_Y):
+            break
+        y = _WEAPON_ROWS_Y[i]
+        _draw_text(draw, item[0], _WEAPON_NAME_X, y,
+                   size=_FS_MED, max_width=_WEAPON_NAME_W, anchor="ls")
+        _draw_text(draw, "{}%".format(item[1]),
+                   _WEAPON_HIT_X, y, size=_FS_MED, anchor="rs")
+
+    # Equipment
+    _autofit_lines(draw, list(character._equipment), _EQUIP_BOX,
+                   columns_options=(1, 2), sizes=(34, 30, 26, 22))
+
+    # Skills (tree)
+    skill_lines = _flatten_skill_tree(character._skill_tree,
+                                      character._secondary_attributes)
+    _autofit_lines(draw, skill_lines, _SKILLS_BOX,
+                   columns_options=(1, 2, 3), sizes=(38, 34, 30, 26, 22))
+
+    # Save (PDF if extension is .pdf, else PNG/JPEG by extension)
+    ext = os.path.splitext(output_path)[1].lower()
+    if ext == ".pdf":
+        img.save(output_path, "PDF", resolution=72.0)
+    else:
+        img.save(output_path)
+    return output_path
+
+
+def main(argv=None):
     '''
-    Generates and prints a character.
+    Generates a Paranoia character and renders a filled-in character sheet.
     '''
+    parser = argparse.ArgumentParser(
+        description="Generate a first-edition Paranoia character and render "
+                    "a filled character sheet.")
+    parser.add_argument("--name", default=None,
+                        help="Override the generated character name.")
+    parser.add_argument("--output", default=None,
+                        help="Output path (default: <name>.pdf in cwd). "
+                             "Use a .png or .pdf extension.")
+    parser.add_argument("--text", action="store_true",
+                        help="Also print the character sheet to stdout.")
+    parser.add_argument("--no-sheet", action="store_true",
+                        help="Skip rendering the filled PDF sheet.")
+    args = parser.parse_args(argv)
+
     char = Character()
-    char.print_character()
+    if args.name:
+        char._name = args.name
+
+    if args.text:
+        char.print_character()
+
+    if not args.no_sheet:
+        out = args.output or "{}.pdf".format(_sanitize_filename(char._name))
+        render_character_sheet(char, out)
+        print(out)
+
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
