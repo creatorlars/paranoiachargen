@@ -1596,7 +1596,7 @@ def main(argv=None):
     parser.add_argument("--name", default=None,
                         help="Override the generated character name.")
     parser.add_argument("--output", default=None,
-                        help="Output path (default: <name>.pdf in cwd). "
+                        help="Output path (default: output/<name>.pdf). "
                              "Use a .png or .pdf extension.")
     parser.add_argument("--text", action="store_true",
                         help="Also print the character sheet to stdout.")
@@ -1612,7 +1612,13 @@ def main(argv=None):
         char.print_character()
 
     if not args.no_sheet:
-        out = args.output or "{}.pdf".format(_sanitize_filename(char._name))
+        if args.output:
+            out = args.output
+        else:
+            out = os.path.join("output", "{}.pdf".format(_sanitize_filename(char._name)))
+        out_dir = os.path.dirname(out)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
         render_character_sheet(char, out)
         print(out)
 
