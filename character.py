@@ -1309,40 +1309,16 @@ class DataTables(object):
 
 SHEET_TEMPLATE = "paranoia-sheet.png"
 
-# Candidate filenames for the "Post Box" Regular font. Pillow searches
-# C:\Windows\Fonts automatically; we also look in the per-user font folder.
-_FONT_CANDIDATES = [
-    "postbox_regular.ttf",
-    "PostBox_Regular.ttf",
-    "Post Box.ttf",
-    "PostBox.ttf",
-    "POSTBOX.TTF",
-]
-
-_FONT_DIRS = [
-    os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts"),
-    os.path.join(os.environ.get("LOCALAPPDATA", ""),
-                 "Microsoft", "Windows", "Fonts"),
-]
-
-_font_path_cache = None
+# Post Box Regular font is bundled in the repo's fonts/ directory.
+_REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+_FONT_PATH = os.path.join(_REPO_DIR, "fonts", "postbox_regular.ttf")
 
 
 def _resolve_font_path():
-    global _font_path_cache
-    if _font_path_cache is not None:
-        return _font_path_cache
-    for d in _FONT_DIRS:
-        if not d or not os.path.isdir(d):
-            continue
-        for name in _FONT_CANDIDATES:
-            candidate = os.path.join(d, name)
-            if os.path.isfile(candidate):
-                _font_path_cache = candidate
-                return candidate
-    raise FileNotFoundError(
-        "Post Box Regular font not found. Looked for {} in {}"
-        .format(_FONT_CANDIDATES, _FONT_DIRS))
+    if not os.path.isfile(_FONT_PATH):
+        raise FileNotFoundError(
+            "Post Box Regular font not found at {}".format(_FONT_PATH))
+    return _FONT_PATH
 
 
 _font_cache = {}
