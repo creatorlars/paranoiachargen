@@ -1412,12 +1412,12 @@ _SECONDARY_ROWS = [
     (925, "believability bonus", _fmt_signed_pct),
     (995, "repair bonus", _fmt_signed_pct),
 ]
-_SECONDARY_VALUE_X = 2415
+_SECONDARY_VALUE_X = 2350
 
 # Single-line fields: (x, baseline_y, max_width, anchor)
 _FIELD_COORDS = {
-    "character_name": (540, 305, 680, "ls"),
-    "player_name":    (1185, 305, 1230, "ls"),
+    "character_name": (540, 285, 680, "ls"),
+    "player_name":    (1185, 285, 1230, "ls"),
     "security_clearance": (175, 1450, 1100, "ls"),
     "service_group":      (1390, 1450, 1020, "ls"),
     "secret_society":      (175, 1700, 1100, "ls"),
