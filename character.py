@@ -1386,14 +1386,14 @@ _FS_SMALL = 38   # mutant powers default
 
 # Primary attributes: (baseline_y, dict_key)
 _PRIMARY_ROWS = [
-    (525, "strength"),
-    (595, "endurance"),
-    (665, "agility"),
-    (735, "manual dexterity"),
-    (805, "moxie"),
-    (875, "chutzpah"),
-    (945, "mechanical aptitude"),
-    (1015, "power index"),
+    (505, "strength"),
+    (575, "endurance"),
+    (645, "agility"),
+    (715, "manual dexterity"),
+    (785, "moxie"),
+    (855, "chutzpah"),
+    (925, "mechanical aptitude"),
+    (995, "power index"),
 ]
 _PRIMARY_VALUE_X = 1190  # right edge of underline
 
@@ -1403,21 +1403,21 @@ def _fmt_kg(v): return "{} kg".format(v)
 def _fmt_signed_pct(v): return "{:+d}%".format(v)
 
 _SECONDARY_ROWS = [
-    (525, "carrying capacity", _fmt_kg),
-    (595, "damage bonus", _fmt_int),
-    (665, "macho bonus", _fmt_int),
-    (735, "melee bonus", _fmt_signed_pct),
-    (805, "aimed weapon bonus", _fmt_signed_pct),
-    (875, "comprehension bonus", _fmt_signed_pct),
-    (945, "believability bonus", _fmt_signed_pct),
-    (1015, "repair bonus", _fmt_signed_pct),
+    (505, "carrying capacity", _fmt_kg),
+    (575, "damage bonus", _fmt_int),
+    (645, "macho bonus", _fmt_int),
+    (715, "melee bonus", _fmt_signed_pct),
+    (785, "aimed weapon bonus", _fmt_signed_pct),
+    (855, "comprehension bonus", _fmt_signed_pct),
+    (925, "believability bonus", _fmt_signed_pct),
+    (995, "repair bonus", _fmt_signed_pct),
 ]
 _SECONDARY_VALUE_X = 2415
 
 # Single-line fields: (x, baseline_y, max_width, anchor)
 _FIELD_COORDS = {
-    "character_name": (540, 295, 680, "ls"),
-    "player_name":    (1185, 295, 1230, "ls"),
+    "character_name": (540, 305, 680, "ls"),
+    "player_name":    (1185, 305, 1230, "ls"),
     "security_clearance": (175, 1450, 1100, "ls"),
     "service_group":      (1390, 1450, 1020, "ls"),
     "secret_society":      (175, 1700, 1100, "ls"),
@@ -1430,14 +1430,14 @@ _EQUIP_BOX  = (1390, 2080, 1025, 460)
 _SKILLS_BOX = (175, 2640, 2240, 580)
 
 # Weapons table: 6 underlined rows for weapon name / to-hit
-_WEAPON_ROWS_Y = [2160, 2250, 2340, 2430, 2520, 2590]
+_WEAPON_ROWS_Y = [2205, 2283, 2361, 2440, 2518, 2596]
 _WEAPON_NAME_X = 175
 _WEAPON_NAME_W = 700
 _WEAPON_HIT_X  = 1175
 
 # Credits: cover preprinted "100" then redraw
-_CREDITS_RECT = (1240, 1130, 1700, 1220)  # white-out box
-_CREDITS_TEXT_XY = (1290, 1200)           # baseline
+_CREDITS_RECT = (1300, 1105, 1500, 1210)  # white-out box
+_CREDITS_TEXT_XY = (1330, 1190)           # baseline
 
 
 def _flatten_skill_tree(tree, attributes):
