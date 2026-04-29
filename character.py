@@ -1418,22 +1418,22 @@ _SECONDARY_VALUE_X = 2415
 _FIELD_COORDS = {
     "character_name": (540, 295, 680, "ls"),
     "player_name":    (1185, 295, 1230, "ls"),
-    "security_clearance": (210, 1430, 980, "ls"),
-    "service_group":      (1240, 1430, 1170, "ls"),
-    "secret_society":      (210, 1700, 980, "ls"),
-    "secret_society_rank": (1240, 1700, 1170, "ls"),
+    "security_clearance": (175, 1450, 1100, "ls"),
+    "service_group":      (1390, 1450, 1020, "ls"),
+    "secret_society":      (175, 1700, 1100, "ls"),
+    "secret_society_rank": (1390, 1700, 1020, "ls"),
 }
 
 # Box areas: (x, y_top, width, height) for multi-line content
-_MUTANT_BOX = (210, 1820, 2210, 200)
-_EQUIP_BOX  = (1240, 2100, 1180, 440)
-_SKILLS_BOX = (190, 2640, 2230, 580)
+_MUTANT_BOX = (175, 1830, 2240, 200)
+_EQUIP_BOX  = (1390, 2080, 1025, 460)
+_SKILLS_BOX = (175, 2640, 2240, 580)
 
 # Weapons table: 6 underlined rows for weapon name / to-hit
-_WEAPON_ROWS_Y = [2110, 2200, 2290, 2380, 2470, 2545]
-_WEAPON_NAME_X = 210
-_WEAPON_NAME_W = 480
-_WEAPON_HIT_X  = 1160
+_WEAPON_ROWS_Y = [2160, 2250, 2340, 2430, 2520, 2590]
+_WEAPON_NAME_X = 175
+_WEAPON_NAME_W = 700
+_WEAPON_HIT_X  = 1175
 
 # Credits: cover preprinted "100" then redraw
 _CREDITS_RECT = (1240, 1130, 1700, 1220)  # white-out box
