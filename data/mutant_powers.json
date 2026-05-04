@@ -1,0 +1,182 @@
+{
+  "normal": {
+    "Advanced Hearing": {
+      "category": "biological",
+      "summary": "The mutant's hearing is sharpened to an unnatural degree, allowing them to pick up whispered conversations through walls, distant footfalls in service tunnels, or the hum of an armed laser pistol. They can be temporarily deafened by sudden loud noises that ordinary citizens would shrug off, and constant exposure to HPD&MC announcements is a particular hazard."
+    },
+    "Advanced Vision": {
+      "category": "biological",
+      "summary": "The mutant sees farther, more sharply, and across a wider spectrum than baseline humans, easily reading text at distances or distinguishing identical-looking clones at a glance. Strong light sources can dazzle them, and they may inadvertently notice details The Computer would prefer remained classified."
+    },
+    "Advanced Touch": {
+      "category": "biological",
+      "summary": "The mutant's sense of touch is so refined they can read printed text by running fingertips over the page, identify materials by texture alone, and feel the faint vibration of approaching footsteps through a wall. The downside is that ordinary surfaces — coarse jumpsuits, hot ration trays, reflec armor — are constantly uncomfortable."
+    },
+    "Advanced Taste": {
+      "category": "biological",
+      "summary": "The mutant can identify ingredients, contaminants, and poisons in food and drink by taste alone, which is genuinely useful in a Complex where most meals are made of recycled algae and occasional R&D additives. Unfortunately every meal also tastes vividly of exactly what it is made of, which is its own punishment."
+    },
+    "Advanced Smell": {
+      "category": "biological",
+      "summary": "The mutant's sense of smell rivals a tracking dog's: they can follow a citizen by scent down a corridor, detect chemical leaks before the alarms trigger, and identify whether the food vat has soured. The constant olfactory assault of unwashed jumpsuits, scrubot exhaust, and burned algae makes life in Alpha Complex a perpetual ordeal."
+    },
+    "Superior Strength": {
+      "category": "biological",
+      "summary": "The mutant is significantly stronger than a baseline citizen, able to bend metal bars, wrench open jammed bulkheads, or hurl a fellow troubleshooter across a room. The trick is using this strength without making it obvious, since unexplained feats of muscle are a fast way to attract IntSec attention."
+    },
+    "Superior Agility": {
+      "category": "biological",
+      "summary": "The mutant moves with unnatural grace, balance, and reflex speed, dodging laser fire, scaling sheer walls, and recovering from falls that would shatter ordinary citizens. Showing off is a constant temptation and a frequent giveaway."
+    },
+    "Superior Endurance": {
+      "category": "biological",
+      "summary": "The mutant resists fatigue, hunger, thirst, and pain to a degree that baseline humans simply cannot match, allowing them to keep functioning long after their teammates have collapsed. Surviving wounds that should have killed them is, of course, exactly the sort of thing that makes IntSec curious."
+    },
+    "Superior Manual Dexterity": {
+      "category": "biological",
+      "summary": "The mutant's hands are extraordinarily quick and precise, ideal for picking pockets, defusing bombs, performing delicate repairs, and shuffling forged requisition forms. Skilled use is nearly invisible; clumsy use looks suspiciously like cheating."
+    },
+    "Superior Power Index": {
+      "category": "biological",
+      "summary": "A general boost to the mutant's overall vitality and life-force, raising their Power Index above what their attributes would normally support and improving secondary stats like carrying capacity and damage resistance. It does not announce itself with flashy effects, which makes it one of the safer mutations to carry."
+    },
+    "Regeneration": {
+      "category": "biological",
+      "summary": "The mutant heals wounds at several times the normal rate; serious injuries close in days rather than weeks, and minor ones in minutes. They cannot regrow lost limbs, and visibly miraculous recoveries are an excellent way to be denounced by one's own teammates."
+    },
+    "Chameleon": {
+      "category": "biological",
+      "summary": "The mutant can shift their skin tone (and, with effort, their hair) to blend with the surroundings, providing genuine concealment so long as they remain still and uncovered by clothing. Since security clearance is determined by jumpsuit color, the temptation to change one's effective clearance is enormous — and so is the penalty when discovered."
+    },
+    "Charm": {
+      "category": "biological",
+      "summary": "The mutant exudes a subtle pheromonal and behavioral charisma that makes others inclined to like, trust, and obey them. The effect is gentle rather than overpowering and works best on baseline humans of the opposite sex, which fortunately covers most of Alpha Complex."
+    },
+    "Magnetosense": {
+      "category": "biological",
+      "summary": "The mutant intuitively perceives magnetic fields, giving them a perfect sense of direction, the ability to detect concealed metal objects, and an instinctive awareness of nearby electrical currents. It is harmless in itself, but explaining how one always knows which way is north tends to invite awkward questions."
+    },
+    "Superior Mechanical Aptitude": {
+      "category": "mental",
+      "summary": "The mutant has an intuitive grasp of how mechanical devices work, allowing them to operate, repair, or jury-rig machinery they have never seen before. It overlaps awkwardly with Mechanical Intuition, but is more about hands-on competence than flashes of insight."
+    },
+    "Superior Moxie": {
+      "category": "mental",
+      "summary": "The mutant has unusual force of personality, the kind that makes superiors listen, subordinates obey, and IntSec interrogators reconsider. It is not magical compulsion — just a presence that consistently exceeds what their security clearance would suggest."
+    },
+    "Superior Chutzpah": {
+      "category": "mental",
+      "summary": "The mutant possesses unshakable nerve and the ability to bluff outrageously without flinching. Walking into a Red Clearance area in a stolen Yellow jumpsuit and demanding to inspect the equipment is, for them, a perfectly ordinary morning."
+    },
+    "Combat Mind": {
+      "category": "mental",
+      "summary": "In the chaos of a firefight the mutant becomes preternaturally calm, perceiving the engagement as a slow, manageable puzzle of angles and timings. They react faster, aim better, and panic less than the troubleshooters around them."
+    },
+    "Empathy": {
+      "category": "mental",
+      "summary": "The mutant senses the emotional state of nearby citizens — fear, anger, attraction, deceit — without needing to read words or thoughts directly. It is invaluable for spotting lies and traitors, and emotionally exhausting in a Complex where everyone is terrified all of the time."
+    },
+    "Mechanical Intuition": {
+      "category": "mental",
+      "summary": "The mutant can look at a malfunctioning machine, an unfamiliar gadget, or an experimental R&D prototype and intuitively understand what it does and how to fix it. They cannot necessarily build it from scratch, but they can usually keep it running long enough to matter."
+    },
+    "Telepathic Sense": {
+      "category": "psionic",
+      "summary": "A passive psionic ability that lets the mutant detect when other minds nearby are using telepathy, broadcasting strong emotions, or simply present in unusual concentrations. It does not read thoughts itself, but it is the standard early-warning system for Psion members operating in IntSec territory."
+    },
+    "Mental Block": {
+      "category": "psionic",
+      "summary": "The mutant can shield their own thoughts from telepathic intrusion, frustrate empaths, and make their mind effectively invisible to scanning. The block can be maintained more or less continuously, which is exactly what one wants when surrounded by suspicious teammates."
+    },
+    "Precognition": {
+      "category": "psionic",
+      "summary": "The mutant catches brief, unreliable flashes of the immediate future — a few seconds of warning that the corridor is mined, that the bot is about to open fire, that the briefing officer has a laser under the desk. The visions are vague, frequently misinterpreted, and never as helpful as one hopes."
+    },
+    "Minor Telekinesis": {
+      "category": "psionic",
+      "summary": "The mutant can move small, light objects at a short distance with their mind: lift a coin, nudge a tumbler in a lock, tip a glass into a victim's lap. It will not throw furniture or stop a laser bolt, but it is exactly the sort of subtle ability that makes a sneaky troubleshooter dangerous."
+    }
+  },
+  "extraordinary": {
+    "Lung/Gill Adaptation": {
+      "category": "biological",
+      "summary": "The mutant can breathe underwater, in low-oxygen atmospheres, or in the toxic sludges that pool in the lower sectors, by switching between conventional lungs and a secondary gill-like respiratory system. It is an unsubtle mutation: the gill slits, when active, are hard to miss in a communal shower."
+    },
+    "Matter Eater": {
+      "category": "biological",
+      "summary": "The mutant can chew, swallow, and digest virtually any solid material — plastic, metal, masonry, reflec armor — given enough time and a strong enough jaw. It is excellent for escaping cells and disposing of incriminating evidence, and it is not at all conspicuous so long as no one walks in mid-meal."
+    },
+    "Polymorphism": {
+      "category": "biological",
+      "summary": "The mutant can alter their physical features — facial structure, body shape, height, voice — to impersonate other citizens, given a few minutes of concentration. They cannot copy security clearance directly (that is a matter of jumpsuit and badge), but a convincing face goes a long way at a checkpoint."
+    },
+    "Adrenalin Control": {
+      "category": "biological",
+      "summary": "The mutant can consciously dump adrenaline into their bloodstream, gaining temporary boosts to strength, speed, and pain resistance. The crash afterward is severe — exhaustion, shaking, sometimes unconsciousness — and chronic use takes a serious toll on the heart."
+    },
+    "Electroshock": {
+      "category": "biological",
+      "summary": "The mutant generates and discharges electrical current through skin contact, delivering anything from a stunning jolt to a lethal shock. Range is limited to touch, but a friendly handshake is rarely viewed as suspicious until the victim hits the floor."
+    },
+    "Suspended Animation": {
+      "category": "mental",
+      "summary": "The mutant can voluntarily slow their metabolism to near-death levels, surviving without food, water, or air for extended periods and appearing convincingly dead to casual examination. It is invaluable for surviving termination booths, locked closets, and tedious briefings."
+    },
+    "Number Cruncher": {
+      "category": "mental",
+      "summary": "The mutant can perform complex mathematical calculations at the speed of a small computer, including ballistic trajectories, probability estimates, and logistics tables. The Computer regards humans who out-calculate Its terminals as either wonderfully useful assets or ominously suspicious threats — usually both."
+    },
+    "Eidetic Memory": {
+      "category": "mental",
+      "summary": "The mutant remembers everything they have ever seen, heard, or read, in perfect detail and on demand. This is enormously useful for memorizing classified documents at a glance, and enormously dangerous when IntSec wants to know exactly what the mutant remembers."
+    },
+    "Suggestion": {
+      "category": "mental",
+      "summary": "The mutant can plant simple, plausible suggestions in the mind of a willing or distracted listener through tone of voice and word choice — 'you didn't see anyone come through here,' 'that requisition form is in order.' It will not override strong loyalties or obvious contradictions, but it bends marginal cases the mutant's way."
+    },
+    "Machine Sense*": {
+      "category": "mental",
+      "summary": "The mutant can perceive the state and basic operation of nearby machines — what they are doing, whether they are damaged, where their controls are — without physically inspecting them. Marked with an asterisk because some referees treat it as bordering on psionic; either way, it pairs naturally with Mechanical Intuition."
+    },
+    "Paralyzer": {
+      "category": "psionic",
+      "summary": "The mutant projects a brief psionic burst that locks a single targeted citizen's voluntary muscles, leaving them frozen in place for several seconds. It works at line-of-sight range, leaves no physical trace, and is one of the most useful 'oops, did I do that?' powers in the catalog."
+    },
+    "Trance Teleport": {
+      "category": "psionic",
+      "summary": "By entering a deep meditative trance the mutant can teleport themselves (and a small amount of carried gear) to a place they know well. Setup takes minutes, the destination must be familiar, and the trance leaves them helpless during the attempt — but it is a genuine escape route from any locked room they can survive long enough to concentrate in."
+    },
+    "Levitation": {
+      "category": "psionic",
+      "summary": "The mutant can lift themselves vertically through the air, hover, and descend gently, though they cannot move horizontally without something to push against. It is excellent for crossing pits, reaching ceilings, and surviving falls; it is also an extremely visible thing to do in a public corridor."
+    },
+    "Telepathic Projection": {
+      "category": "psionic",
+      "summary": "The mutant can transmit thoughts, words, and images directly into the mind of another person, allowing silent communication with allies and unsettling whispers to enemies. Reception is one-way unless the target also has telepathic abilities, which makes it ideal for one-sided 'guidance' of less psychic teammates."
+    },
+    "Deep Probe": {
+      "category": "psionic",
+      "summary": "The mutant can read the surface and deeper thoughts of another citizen, with effort extracting memories, secrets, and society affiliations. The target usually senses something is wrong — headaches, nosebleeds, vague dread — and Mental Block defeats it outright, but a successful probe is devastating."
+    },
+    "Mental Blast": {
+      "category": "psionic",
+      "summary": "The mutant projects a focused psionic attack that overloads the target's nervous system, inflicting pain, unconsciousness, or in extreme cases death. It leaves no marks, no laser burns, and no trace evidence — only a corpse with no obvious cause of demise, which is its own problem."
+    },
+    "Pyrokinesis": {
+      "category": "psionic",
+      "summary": "The mutant can ignite flammable materials at a distance by concentrating on them, kindling fires in paperwork, jumpsuits, or carelessly stored ammunition. Open use is essentially a confession of mutancy, but a well-timed accidental fire has saved many a society cell."
+    },
+    "Empathic Healing": {
+      "category": "psionic",
+      "summary": "The mutant can accelerate the healing of wounds and illness in another citizen by channeling the injury through themselves, taking on a portion of the damage as their own. It is a remarkable and selfless gift, and an excellent way to be denounced by a grateful patient who decides the encounter looked suspicious in retrospect."
+    },
+    "Machine Empathy*": {
+      "category": "psionic",
+      "summary": "The mutant forms a direct psionic rapport with machines, especially bots and computers, sensing their 'moods' and gently nudging their behavior. Skilled users can talk a stubborn scrubot into cooperating or coax a malfunctioning terminal back online; reckless ones may attract The Computer's personal attention."
+    },
+    "Luck": {
+      "category": "psionic",
+      "summary": "The mutant subtly bends probability in their favor: the dropped grenade rolls behind cover, the random patrol turns the other way, the malfunctioning laser pistol misfires when pointed at them. The effect is small per event, statistically uncanny over time, and undetectable in any single instance — which makes it arguably the best mutation a troubleshooter can have."
+    }
+  }
+}

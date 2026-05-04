@@ -3,6 +3,7 @@
 A script to generate characters for the first edition of the Paranoia RPG.
 '''
 import argparse
+import json
 import os
 import re
 import sys
@@ -1311,6 +1312,21 @@ SHEET_TEMPLATE = "paranoia-sheet.png"
 
 # Post Box Regular font is bundled in the repo's fonts/ directory.
 _REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+_DATA_DIR = os.path.join(_REPO_DIR, "data")
+
+# Page size of the rendered sheet (US Letter @ 300 dpi).
+_PAGE_WIDTH = 2550
+_PAGE_HEIGHT = 3300
+
+_data_cache = {}
+
+
+def _load_data(filename):
+    if filename not in _data_cache:
+        path = os.path.join(_DATA_DIR, filename)
+        with open(path, "r", encoding="utf-8") as fh:
+            _data_cache[filename] = json.load(fh)
+    return _data_cache[filename]
 _FONT_PATH = os.path.join(_REPO_DIR, "fonts", "postbox_regular.ttf")
 
 
@@ -1482,8 +1498,132 @@ def _sanitize_filename(name):
     return re.sub(r"[^A-Za-z0-9._-]+", "_", name).strip("_") or "character"
 
 
-def render_character_sheet(character, output_path):
-    '''Render the given Character onto a copy of the template and save it.'''
+def _wrap_paragraph(text, font, max_width):
+    '''Greedy word-wrap of a single paragraph to a list of lines.'''
+    words = text.split()
+    lines = []
+    current = ""
+    for word in words:
+        candidate = word if not current else current + " " + word
+        if _text_width(candidate, font) <= max_width:
+            current = candidate
+        else:
+            if current:
+                lines.append(current)
+            # If a single word is still too wide, just emit it as-is.
+            current = word
+    if current:
+        lines.append(current)
+    return lines
+
+
+def render_summary_page(character):
+    '''Render a second page describing the character's service group, secret
+    society, and mutant powers using paragraphs from data/*.json. Returns a
+    PIL Image sized to match the character sheet.'''
+    img = Image.new("RGB", (_PAGE_WIDTH, _PAGE_HEIGHT), (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+
+    margin_x = 175
+    content_w = _PAGE_WIDTH - 2 * margin_x
+    y = 200
+
+    section_size = _FS_LARGE      # 50 - section headers
+    entry_title_size = _FS_MED    # 46 - entry titles
+    body_size = _FS_SMALL         # 38 - body paragraphs
+    body_gap = 12
+    section_gap = 70
+    entry_gap = 36
+
+    section_font = _font(section_size)
+    entry_title_font = _font(entry_title_size)
+    body_font = _font(body_size)
+    body_asc, body_desc = body_font.getmetrics()
+    body_line_h = body_asc + body_desc + body_gap
+
+    def draw_section_header(label):
+        nonlocal y
+        s_asc, s_desc = section_font.getmetrics()
+        draw.text((margin_x, y + s_asc), label,
+                  font=section_font, fill=(0, 0, 0), anchor="ls")
+        y += s_asc + s_desc + 10
+        draw.line([(margin_x, y), (_PAGE_WIDTH - margin_x, y)],
+                  fill=(120, 120, 120), width=2)
+        y += 20
+
+    def draw_entry(title, body):
+        nonlocal y
+        t_asc, t_desc = entry_title_font.getmetrics()
+        draw.text((margin_x, y + t_asc), title,
+                  font=entry_title_font, fill=(0, 0, 0), anchor="ls")
+        y += t_asc + t_desc + 8
+        for line in _wrap_paragraph(body, body_font, content_w):
+            draw.text((margin_x, y + body_asc), line,
+                      font=body_font, fill=(0, 0, 0), anchor="ls")
+            y += body_line_h
+        y += entry_gap
+
+    # Service group
+    service_groups = _load_data("service_groups.json")
+    draw_section_header("Service Group")
+    sg_name = character._service_group
+    sg_info = service_groups.get(sg_name, {})
+    sg_title = sg_name
+    if sg_info.get("abbreviation"):
+        sg_title = "{} ({})".format(sg_name, sg_info["abbreviation"])
+    sg_summary = sg_info.get("summary",
+                             "No briefing data available for this service "
+                             "group, citizen. Report to HPD&MC immediately.")
+    draw_entry(sg_title, sg_summary)
+    y += section_gap - entry_gap
+
+    # Secret society
+    societies = _load_data("secret_societies.json")
+    draw_section_header("Secret Society")
+    ss_name = character._secret_society
+    ss_info = societies.get(ss_name, {})
+    ss_summary = ss_info.get("summary",
+                             "No briefing data available for this society. "
+                             "If discovered, deny everything.")
+    draw_entry(ss_name, ss_summary)
+    y += section_gap - entry_gap
+
+    # Mutant powers
+    powers_data = _load_data("mutant_powers.json")
+    normal = powers_data.get("normal", {})
+    extraordinary = powers_data.get("extraordinary", {})
+    draw_section_header("Mutant Powers")
+
+    if character._registered_mutant:
+        rm_asc, rm_desc = entry_title_font.getmetrics()
+        draw.text((margin_x, y + rm_asc), "(REGISTERED MUTANT)",
+                  font=entry_title_font, fill=(180, 0, 0), anchor="ls")
+        y += rm_asc + rm_desc + entry_gap
+
+    real_powers = [p for p in (character._mutant_powers or [])
+                   if p and p[0] is not None]
+    if not real_powers:
+        draw_entry("None on record",
+                   "No mutant powers detected. Continue to report any "
+                   "anomalous abilities to The Computer.")
+    else:
+        for p in real_powers:
+            name = p[0]
+            category = p[1] if len(p) > 1 else None
+            info = normal.get(name) or extraordinary.get(name) or {}
+            summary = info.get("summary",
+                               "No additional briefing data available for "
+                               "this power.")
+            label = name
+            if category:
+                label = "{} ({})".format(name, category)
+            draw_entry(label, summary)
+
+    return img
+
+
+def build_character_sheet_image(character):
+    '''Build and return the filled front-page sheet as a PIL Image.'''
     template_path = os.path.join(os.path.dirname(__file__), SHEET_TEMPLATE)
     img = Image.open(template_path).convert("RGB")
     draw = ImageDraw.Draw(img)
@@ -1553,12 +1693,36 @@ def render_character_sheet(character, output_path):
     _autofit_lines(draw, skill_lines, _SKILLS_BOX,
                    columns_options=(1, 2, 3), sizes=(38, 34, 30, 26, 22))
 
+    return img
+
+
+def render_character_sheet(character, output_path):
+    '''Render the given Character onto a copy of the template and save it.'''
+    img = build_character_sheet_image(character)
+
     # Save (PDF if extension is .pdf, else PNG/JPEG by extension)
     ext = os.path.splitext(output_path)[1].lower()
     if ext == ".pdf":
-        img.save(output_path, "PDF", resolution=72.0)
+        summary_img = render_summary_page(character)
+        img.save(output_path, "PDF", resolution=72.0,
+                 save_all=True, append_images=[summary_img])
     else:
         img.save(output_path)
+    return output_path
+
+
+def render_characters_to_pdf(characters, output_path):
+    '''Render multiple characters into a single multi-page PDF. Each character
+    contributes its filled sheet followed by its summary page.'''
+    pages = []
+    for c in characters:
+        pages.append(build_character_sheet_image(c))
+        pages.append(render_summary_page(c))
+    if not pages:
+        raise ValueError("No characters to render")
+    first, rest = pages[0], pages[1:]
+    first.save(output_path, "PDF", resolution=72.0,
+               save_all=True, append_images=rest)
     return output_path
 
 
@@ -1578,7 +1742,36 @@ def main(argv=None):
                         help="Also print the character sheet to stdout.")
     parser.add_argument("--no-sheet", action="store_true",
                         help="Skip rendering the filled PDF sheet.")
+    parser.add_argument("--batch", type=int, default=0,
+                        help="Generate N characters and merge them into a "
+                             "single multi-page PDF.")
+    parser.add_argument("--batch-name", default=None,
+                        help="Name prefix for batch characters; the index "
+                             "is appended (e.g. 'Hank-R-CON-' produces "
+                             "Hank-R-CON-1, Hank-R-CON-2, ...).")
     args = parser.parse_args(argv)
+
+    if args.batch and args.batch > 0:
+        prefix = args.batch_name or args.name or "Citizen-R-CON-"
+        chars = []
+        for i in range(1, args.batch + 1):
+            c = Character()
+            c._name = prefix
+            chars.append(c)
+            if args.text:
+                c.print_character()
+        if args.output:
+            out = args.output
+        else:
+            base = _sanitize_filename(prefix.rstrip("-_ ") or "batch")
+            out = os.path.join("output",
+                               "{}_x{}.pdf".format(base, args.batch))
+        out_dir = os.path.dirname(out)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
+        render_characters_to_pdf(chars, out)
+        print(out)
+        return
 
     char = Character()
     if args.name:

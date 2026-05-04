@@ -1,0 +1,34 @@
+{
+  "Internal Security": {
+    "abbreviation": "IntSec",
+    "summary": "Internal Security is The Computer's secret police: the troubleshooter-watchers, interrogators, and executioners who hunt traitors, mutants, and members of secret societies throughout Alpha Complex. IntSec is feared by every other service group because virtually any citizen can be summarily detained on suspicion alone, and 'cooperating with an IntSec investigation' usually ends at the termination booth. Internally it is riddled with paranoia, internal purges, and rival cells competing to denounce one another for promotion."
+  },
+  "Technical Services": {
+    "abbreviation": "Tech Services",
+    "summary": "Technical Services maintains, repairs, and (more often) breaks the bots, vehicles, plumbing, scrubbers, conveyor belts, and every other piece of malfunctioning hardware in Alpha Complex. Its citizens are the plumbers, mechanics, and bot-jockeys whose job it is to make R&D's lethal inventions sort-of work in the field. Tech Services is the natural home for Pro Tech sympathizers and Frankenstein Destroyers alike, and a Tech Services briefing usually ends with the words 'it should be safe now.'"
+  },
+  "HPD & Mind Control": {
+    "abbreviation": "HPD&MC",
+    "summary": "Housing Preservation, Development and Mind Control is the propaganda, entertainment, housing, and indoctrination arm of Alpha Complex. HPD&MC writes the cheerful jingles, runs the mandatory happiness broadcasts, assigns sleeping cubicles, and ensures that every citizen knows the Computer is their friend. Its officers include vid-stars, slogan writers, dorm wardens, and morale officers, and they are widely (and correctly) suspected of being the most effective brainwashers in the Complex."
+  },
+  "Armed Forces": {
+    "abbreviation": "AF",
+    "summary": "The Armed Forces are Alpha Complex's standing military: Vulture Squadrons, infantry, armored units, and combat-bot crews tasked with defending the Complex from Commies, mutants, and the dangers of Outdoors. They bring the heaviest weapons and the loudest voices, and their officers are notorious for solving problems by application of overwhelming firepower. Armed Forces personnel make excellent troubleshooters and even better friendly-fire casualties."
+  },
+  "Production, Logistics and Commissary": {
+    "abbreviation": "PLC",
+    "summary": "PLC produces, stockpiles, ships, and serves everything in Alpha Complex, from algae-paste rations and B3 cold fun to ammunition, jumpsuits, and reflec armor. Its supply clerks and quartermasters control the requisition forms that make or break a mission, and they are universally acknowledged to be the most blatantly corrupt service group in the Complex. PLC is the natural cover for Free Enterprise operatives, black marketeers, and anyone who knows that the right form, properly stamped, is more powerful than a laser pistol."
+  },
+  "Power Services": {
+    "abbreviation": "PowSer",
+    "summary": "Power Services keeps the lights on: it generates, distributes, and meters every joule of electricity, fusion, and reactor output in Alpha Complex. Its engineers crawl through the conduits and cooling tunnels of the lower sectors, fight off vermin and Commie saboteurs, and pray that the next brownout is somebody else's fault. Power Services citizens know more about the physical guts of the Complex than anyone else, which makes them dangerously well-informed and frequently terminated."
+  },
+  "Research and Design": {
+    "abbreviation": "R&D",
+    "summary": "Research and Design invents the experimental weapons, drugs, bots, and gadgets that make troubleshooting missions so memorably brief. Field-testing R&D equipment is one of the leading causes of clone replacement in Alpha Complex, since most prototypes are flagged 'probably safe' rather than actually safe. R&D scientists are brilliant, eccentric, and frequently mutants themselves, and they are forever convinced that this time the experimental cone rifle will not explode."
+  },
+  "Central Processing Unit": {
+    "abbreviation": "CPU",
+    "summary": "Central Processing Unit is the bureaucratic and computational arm of Alpha Complex: programmers, data clerks, and administrators who write the software, file the forms, and shuffle the records that the Computer relies on. CPU citizens have unparalleled access to The Computer's databases, which makes them ideal recruits for Computer Phreaks, Programs Group, and the Illuminati. A misplaced decimal in a CPU file can promote a citizen to High Programmer or condemn them to summary execution, so the office politics are unusually lively."
+  }
+}
